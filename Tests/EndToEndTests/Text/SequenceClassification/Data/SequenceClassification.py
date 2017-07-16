@@ -7,6 +7,7 @@
 import os
 import cntk as C
 import copy
+from cntk.device import try_set_default_device, gpu
 
 
 # Creates the reader
@@ -45,7 +46,7 @@ def train_sequence_classifier():
     ce = C.cross_entropy_with_softmax(classifier_output, label)
     pe = C.classification_error(classifier_output, label)
 
-    rel_path = r"D:\\Xinze-Home\\Documents\\GitHub\\CNTK\\Tests\\EndToEndTests\\Text\\SequenceClassification\\Data"
+    rel_path = r"D:\\Xinze-Home\\Documents\\GitHub\\CNTK\\Tests\\EndToEndTests\\Text\\SequenceClassification\\Data\\Train.ctf"
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), rel_path)
 
     reader = create_reader(path, True, input_dim, num_classes)
@@ -82,5 +83,6 @@ if __name__ == '__main__':
     # use the best available one, e.g.
     # C.try_set_default_device(C.cpu())
 
+    try_set_default_device(gpu(0))
     error, _ = train_sequence_classifier()
     print("Error: %f" % error)
