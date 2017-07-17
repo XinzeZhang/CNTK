@@ -20,6 +20,7 @@ from cntk.layers import *
 from cntk.layers.sequence import *
 from cntk.layers.models.attention import *
 from cntk.layers.typing import *
+from cntk.device import try_set_default_device, gpu
 
 ########################
 # variables and stuff  #
@@ -218,7 +219,7 @@ def train(train_reader, valid_reader, vocab, i2w, s2smodel, max_epochs, epoch_si
     minibatch_size = 72
     lr = 0.001 if use_attention else 0.005   # TODO: can we use the same value for both?
     learner = fsadagrad(model_train.parameters,
-                        lr       = learning_rate_schedule([lr]*2+[lr/2]*3+[lr/4], UnitType.sample, epoch_size),
+                        lr       = learning_rate_schedule([lr]*2+[lr/2]*3+[lr/4], UnitType.sample,  ),
                         momentum = momentum_as_time_constant_schedule(1100),
                         gradient_clipping_threshold_per_sample=2.3,
                         gradient_clipping_with_truncation=True)
@@ -468,6 +469,7 @@ def debug_attention(model, input):
 
 if __name__ == '__main__':
     #try_set_default_device(cpu())
+    try_set_default_device(gpu(0))
 
     from _cntk_py import set_fixed_random_seed
     set_fixed_random_seed(1)
